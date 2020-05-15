@@ -16,18 +16,17 @@ async function main() {
   while (page) {
     try {
       const result = await get(page);
-      page = result.next;
+      const { next = null, objects = [] } = result;
+      page = next;
       
-      if (result.objects && result.objects.length > 0) {
-        const items = result.objects.filter(object => {
-          if (object.category === category) {
-            object.cubicWieght = getCubicWeight(object.size);
-            return true;
-          }
-          return false;
-        });
-        totalItems.push(...items);
-      }
+      const items = objects.filter(object => {
+        if (object.category === category) {
+          object.cubicWieght = getCubicWeight(object.size);
+          return true;
+        }
+        return false;
+      });
+      totalItems.push(...items);
     } catch (e) {
       console.error(e);
       break;
